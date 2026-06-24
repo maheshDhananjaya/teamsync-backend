@@ -1,98 +1,85 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# TeamSync Backend API Engine
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Core RESTful API engineering built with NestJS, Prisma ORM, and PostgreSQL. This service powers real-time project management workspaces, automated role-based security access control (RBAC), task prioritization with optimized index lookups, and token-rotation authentication mechanisms.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+---
 
-## Description
+## 🛠️ Architecture & Core Design Decisions
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### 1. Database Entity Relationship Diagram (ERD)
 
-## Project setup
+Our database maps out five primary relational entities to capture workspace interactions cleanly:
 
-```bash
-$ npm install
+```mermaid
+erDiagram
+    USER ||--o{ PROJECT : "owns (ProjectOwner)"
+    USER ||--o{ PROJECT_MEMBER : "has memberships"
+    USER ||--o{ TASK : "assigned to (TaskAssignee)"
+    USER ||--o{ COMMENT : "writes"
+
+    PROJECT ||--o{ PROJECT_MEMBER : "contains"
+    PROJECT ||--o{ TASK : "comprises"
+
+    TASK ||--o{ COMMENT : "has discussion thread"
 ```
 
-## Compile and run the project
+## Getting Started (Local Setup Lifecycle)
 
-```bash
-# development
-$ npm run start
+Follow these instructions exactly to pull down, initialize, and run the complete API workspace suite on your local development machine.
 
-# watch mode
-$ npm run start:dev
+### Prerequisites
 
-# production mode
-$ npm run start:prod
-```
+Make sure you have the following installed locally:
 
-## Run tests
+- Node.js (v18 or v20 recommended)
 
-```bash
-# unit tests
-$ npm run test
+- Docker Desktop / Docker Compose Engine.
 
-# e2e tests
-$ npm run test:e2e
+### Environmental Variable Configuration
 
-# test coverage
-$ npm run test:cov
-```
+The backend depends on specific credentials to connect to databases and sign secure token payloads. Create a .env file right in the root backend directory:
+Open your newly generated .env file and verify it contains the following configurations:
 
-## Deployment
+PORT=3000
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+PostgreSQL Local Infrastructure URLs
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+DATABASE_URL="postgresql://teamsync_user:teamsync_secure_password@localhost:5432/teamsync_db?schema=public"
+SHADOW_DATABASE_URL="postgresql://teamsync_user:teamsync_secure_password@localhost:5432/teamsync_db?schema=shadow"
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+Cryptographic Token Signatures
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+JWT_ACCESS_SECRET="teamsync_high_security_access_hash_signature"
+JWT_ACCESS_EXPIRATION="15m"
+JWT_REFRESH_SECRET="teamsync_high_security_refresh_hash_signature"
+JWT_REFRESH_EXPIRATION="7d"
 
-## Resources
+### Launch Local Database Infrastructure
 
-Check out a few resources that may come in handy when working with NestJS:
+Spin up the isolated PostgreSQL database container and pgAdmin visual manager in a detached state using Docker Compose
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+- docker compose up -d
 
-## Support
+### Install Dependencies
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+Restore the backend package libraries and tool definitions
 
-## Stay in touch
+- npm install
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Execute Relational Migrations & DB Seeding
 
-## License
+Sync your local database schemas, generate the type-safe Prisma client, and run our automated mock data seeder script
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+ - npx prisma migrate dev --name init
+ - npx prisma db seed
+
+### Launch the Application Engine
+
+Run the development server with hot-reload monitoring enable
+
+ - npm run start:dev
+
+The application successfully initializes and mounts your routes. You will see the confirmation logs printed in your terminal:
+
+ - 🚀 TeamSync backend engine successfully launched on: http://localhost:3000
+ - 📄 Dynamic Swagger Open-API interface active at: http://localhost:3000/api/docs
