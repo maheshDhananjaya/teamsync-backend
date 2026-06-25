@@ -9,7 +9,7 @@ async function bootstrap() {
 
   // 1. Enable Cross-Origin Resource Sharing (CORS) so our Next.js web app can make API requests
   app.enableCors({
-    origin: '*', // In production, replace with specific domain limits
+    origin: ['http://localhost:3000'], // In production, replace with specific domain limits
     credentials: true,
   });
 
