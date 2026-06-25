@@ -39,8 +39,9 @@ export class ProjectController {
     summary: 'Retrieve all projects the authenticated user belongs to',
   })
   @ApiResponse({ status: 200, description: 'List of matching project boards.' })
-  findAll(@Req() req) {
+  async findAll(@Req() req) {
     const user = req.user as any;
-    return this.projectService.getProjectsForUser(user.id);
+    const project = await this.projectService.getProjectsForUser(user.id);
+    return project;
   }
 }

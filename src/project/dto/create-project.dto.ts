@@ -8,7 +8,7 @@ export class CreateProjectDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Project name cannot be blank' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     example: 'Migrating legacy assets to clean Expo setups.',

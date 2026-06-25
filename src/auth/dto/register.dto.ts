@@ -15,7 +15,7 @@ export class RegisterDto {
     description: 'The unique email address of the user',
   })
   @IsEmail({}, { message: 'Please enter a valid email address' })
-  email: string;
+  email!: string;
 
   @ApiProperty({
     example: 'password123',
@@ -23,7 +23,7 @@ export class RegisterDto {
   })
   @IsString()
   @MinLength(6, { message: 'Password must be at least 6 characters long' })
-  password: string;
+  password!: string;
 
   @ApiProperty({
     example: 'Mahesh Kulathunga',
@@ -31,7 +31,7 @@ export class RegisterDto {
   })
   @IsString()
   @IsNotEmpty({ message: 'Name cannot be empty' })
-  name: string;
+  name!: string;
 
   @ApiProperty({
     enum: GlobalRole,

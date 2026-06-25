@@ -33,13 +33,9 @@ export class ProjectService {
 
   // 2. Fetch all projects where the active authenticated user is an explicit member
   async getProjectsForUser(userId: string) {
-    return this.prisma.project.findMany({
+    const projects = await this.prisma.project.findMany({
       where: {
-        members: {
-          some: {
-            userId: userId,
-          },
-        },
+        ownerId: userId,
       },
       include: {
         _count: {
@@ -47,5 +43,6 @@ export class ProjectService {
         },
       },
     });
+    return projects;
   }
 }
